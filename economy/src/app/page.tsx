@@ -19,11 +19,23 @@ export default function Page() {
         }
       >
         <motion.div
-          className="fixed text-4xl text-white font-extrabold"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, transition: { duration: 0.8, delay: 0.5 } }}
+          className="fixed md:ml-20 ml-2"
+          initial={{ y: 500 }}
+          animate={{
+            y: 50,
+            transition: { duration: 3, delay: 3, ease: "easeInOut" },
+          }}
         >
-          <p>Inflation</p>
+          <motion.h2
+            className="overflow-hidden md:text-6xl text-3xl text-white font-extrabold"
+            initial={{ width: 0 }}
+            animate={{
+              width: "100%",
+              transition: { duration: 2.5, delay: 0.3, ease: "easeInOut" },
+            }}
+          >
+            Inflation
+          </motion.h2>
         </motion.div>
       </main>
     </AnimatePresence>

@@ -13,6 +13,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - uses: actions/checkout@v4
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          source: "api/app.py"
+          target: /opt/api
+
       - name: Run FastAPI on server
         uses: appleboy/ssh-action@v0.1.4
         with:
@@ -21,9 +32,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
-            # pkill -f 'app.py'
-            ls -lart
-            # scp api/app.py root@${{ secrets.SSH_HOST }}:/opt/api/
-            # cd /opt/api/
-            # nohup fastapi run app.py &> /dev/null &
-            # EOF
+            pkill -f 'app.py'
+            cd /opt/api/
+            nohup fastapi run app.py &> /dev/null &
+            EOF

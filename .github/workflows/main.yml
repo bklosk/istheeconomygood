@@ -29,5 +29,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
+            pkill -f "fastapi"
             cd /opt/api/
-            nohup fastapi run app.py &> /dev/null &
+            nohup fastapi run app.py

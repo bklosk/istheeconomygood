@@ -22,7 +22,8 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
             # pkill -f 'app.py'
-            scp api/app.py root@${{ secrets.SSH_HOST }}:/opt/api/
-            cd /opt/api/
+            ls -lart
+            # scp api/app.py root@${{ secrets.SSH_HOST }}:/opt/api/
+            # cd /opt/api/
             # nohup fastapi run app.py &> /dev/null &
             # EOF

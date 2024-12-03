@@ -7,9 +7,11 @@ import uvicorn
 import requests
 import os
 from dotenv import load_dotenv
+from openai import OpenAI
 
 load_dotenv()
 
+ai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app = FastAPI()
 
@@ -29,23 +31,47 @@ api_responses = {}
 # fetch data asynchronously from all sources
 async def fetch_data():
     # fetch data from FRED
-    response = requests.get(
-        "https://api.stlouisfed.org/fred/series",
+    fred_rent = requests.get(
+        "https://api.stlouisfed.org/fred/series/observations",
         params={
-            "series_id": "GNPCA",
+            "series_id": "CUSR0000SAS2RS",
             "api_key": os.getenv("FRED_KEY"),
             "file_type": "json",
+            "frequency": "m",
         },
     )
+    fred_unrate = requests.get(
+        "https://api.stlouisfed.org/fred/series/observations",
+        params={
+            "series_id": "UNRATE",
+            "api_key": os.getenv("FRED_KEY"),
+            "file_type": "json",
+            "frequency": "m",
+        },
+    )
+
+    # describe the data with GPT-4o mini
+    ai_test = ai_client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": f"You are a PhD economist. Explain the direct, applied implications of last month's {fred_unrate.json()["observations"][-1]["value"]}% increase in unemployment to a smart high schooler. Use easily understandable words. Use short sentences. Keep the tone light. Do not use exclamation marks. Explain in one paragraph how it will impact workers. If unemployment went up, assume workers will be fired rather than take pay cuts.",
+            }
+        ],
+        model="gpt-4o-mini",
+    )
+
     api_responses["time"] = datetime.datetime.now()
-    api_responses["fred"] = response.json()
+    api_responses["fred_rent"] = fred_rent.json()
+    api_responses["fred_unrate"] = fred_unrate.json()
+    api_responses["ai_test"] = {"message": ai_test.choices[0].message.content}
 
 
 # Background task to refresh data every 24 hours
 async def refresh_data():
     while True:
         await fetch_data()
-        await asyncio.sleep(100)  # Sleep for 24 hours
+        await asyncio.sleep(24 * 60 * 60)  # Sleep for 24 hours
 
 
 @app.on_event("startup")
@@ -61,9 +87,21 @@ async def health():
     return {"status": "ok"}
 
 
-@app.get("/test")
-async def test(data: str):
-    return api_responses
+# the monthly rent level for urban areas
+@app.get("/rent")
+async def rent():
+    return api_responses["fred_rent"]
+
+
+# the monthly unemployment rate
+@app.get("/unrate")
+async def unrate():
+    return api_responses["fred_unrate"]
+
+
+@app.get("/ai_test")
+async def ai_test():
+    return api_responses["ai_test"]
 
 
 if __name__ == "__main__":

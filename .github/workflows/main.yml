@@ -31,4 +31,3 @@ jobs:
           script: |
             cd /opt/api/
             nohup fastapi run app.py &> /dev/null &
-            EOF

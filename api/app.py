@@ -45,7 +45,7 @@ async def fetch_data():
 async def refresh_data():
     while True:
         await fetch_data()
-        await asyncio.sleep(10)  # Sleep for 24 hours
+        await asyncio.sleep(100)  # Sleep for 24 hours
 
 
 @app.on_event("startup")
@@ -63,7 +63,7 @@ async def health():
 
 @app.get("/test")
 async def test(data: str):
-    return api_responses["data1"]
+    return api_responses
 
 
 if __name__ == "__main__":

@@ -30,4 +30,4 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
             cd /opt/api/
-            nohup fastapi run app.py
+            nohup fastapi run app.py &> /dev/null &

@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import datetime
 from contextlib import asynccontextmanager
 import asyncio
 import uvicorn
@@ -21,7 +22,7 @@ api_responses = {}
 
 # fetch data asynchronously from all sources
 async def fetch_data():
-    api_responses["data1"] = "test"
+    api_responses["data1"] = datetime.datetime.now()
 
 
 # Background task to refresh data every 24 hours

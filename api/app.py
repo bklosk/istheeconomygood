@@ -4,6 +4,12 @@ import datetime
 from contextlib import asynccontextmanager
 import asyncio
 import uvicorn
+import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 app = FastAPI()
 
@@ -22,14 +28,24 @@ api_responses = {}
 
 # fetch data asynchronously from all sources
 async def fetch_data():
-    api_responses["data1"] = datetime.datetime.now()
+    # fetch data from FRED
+    response = requests.get(
+        "https://api.stlouisfed.org/fred/series",
+        params={
+            "series_id": "GNPCA",
+            "api_key": os.getenv("FRED_KEY"),
+            "file_type": "json",
+        },
+    )
+    api_responses["time"] = datetime.datetime.now()
+    api_responses["fred"] = response.json()
 
 
 # Background task to refresh data every 24 hours
 async def refresh_data():
     while True:
         await fetch_data()
-        await asyncio.sleep(1)  # Sleep for 24 hours
+        await asyncio.sleep(10)  # Sleep for 24 hours
 
 
 @app.on_event("startup")

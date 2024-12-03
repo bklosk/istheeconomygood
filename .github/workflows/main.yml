@@ -23,4 +23,6 @@ jobs:
           script: |
             pkill -f 'app.py'
             cd /opt/api
+            sudo scp StrictHostKeyChecking=no app.py root@${{ secrets.SSH_HOST }}:/opt/api/
             nohup fastapi run app.py &> /dev/null &
+            EOF

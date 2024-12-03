@@ -29,7 +29,7 @@ async def fetch_data():
 async def refresh_data():
     while True:
         await fetch_data()
-        await asyncio.sleep(24 * 60 * 60)  # Sleep for 24 hours
+        await asyncio.sleep(1)  # Sleep for 24 hours
 
 
 @app.on_event("startup")

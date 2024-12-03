@@ -19,7 +19,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           source: "api/app.py"
-          target: /opt/api
+          target: /opt/
 
       - name: Run FastAPI on server
         uses: appleboy/ssh-action@v0.1.4
@@ -29,6 +29,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
-            cd /opt/api/api/
+            cd /opt/api/
             nohup fastapi run app.py &> /dev/null &
             EOF

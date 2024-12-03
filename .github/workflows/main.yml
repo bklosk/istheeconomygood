@@ -21,9 +21,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
-            echo 1
             # pkill -f 'app.py'
-            # cd /opt/api
-            # sudo scp StrictHostKeyChecking=no app.py root@${{ secrets.SSH_HOST }}:/opt/api/
+            cd /opt/api
+            scp StrictHostKeyChecking=no api/app.py root@${{ secrets.SSH_HOST }}:/opt/api/
             # nohup fastapi run app.py &> /dev/null &
             # EOF

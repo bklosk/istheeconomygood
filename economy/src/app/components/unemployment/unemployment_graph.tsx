@@ -29,8 +29,7 @@ const yScale = scaleLinear({
 });
 
 export default function InflationGraph({ scrollYProgress }) {
-  const scroll_scaled = useTransform(() => scrollYProgress.get() * 40);
-  const clamped_scroll_scaled = useTransform(scroll_scaled, [0, 1], [0, 1], {
+  const scroll = useTransform(scrollYProgress, [0, 1], [0, 1], {
     clamp: true,
   });
 
@@ -47,7 +46,7 @@ export default function InflationGraph({ scrollYProgress }) {
         strokeWidth={2}
         fill="none"
         initial={{ pathLength: 0 }}
-        pathLength={clamped_scroll_scaled}
+        pathLength={scroll}
       />
     </svg>
   );

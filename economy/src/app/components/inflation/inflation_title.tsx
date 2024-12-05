@@ -3,7 +3,6 @@ import { motion } from "motion/react";
 export function InflationTitle() {
   return (
     <motion.div
-      className="sticky md:top-4 top-2 md:ml-20 ml-4"
       initial={{ y: 500 }}
       animate={{
         y: 0,

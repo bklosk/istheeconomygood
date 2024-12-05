@@ -6,27 +6,17 @@ import { extent, max } from "d3-array";
 import * as d3 from "d3";
 
 export default function InflationGraph({ inflation_data, scrollYProgress }) {
-  console.log(inflation_data.observations);
-  // Sample data
-  const data = [
-    { date: new Date(2020, 0, 1), value: 50 },
-    { date: new Date(2020, 1, 1), value: 10 },
-    { date: new Date(2020, 2, 1), value: 20 },
-    { date: new Date(2020, 3, 1), value: 80 },
-    { date: new Date(2020, 4, 1), value: 30 },
-  ];
-
   // Accessors
-  const getX = (d: { date: Date; value: number }) => d.date;
+  const getX = (d: { date: Date; value: number }) => new Date(d.date);
   const getY = (d: { date: Date; value: number }) => d.value;
 
   // Scales
   const xScale = scaleTime({
-    domain: extent(data, getX) as [Date, Date],
+    domain: extent(inflation_data.observations, getX) as [Date, Date],
     range: [0, 1000],
   });
   const yScale = scaleLinear({
-    domain: [0, max(data, getY) || 100],
+    domain: [0, max(inflation_data.observations, getY) || 100],
     range: [400, 0],
   });
 
@@ -36,7 +26,7 @@ export default function InflationGraph({ inflation_data, scrollYProgress }) {
   });
 
   return (
-    <svg width={1000} height={400}>
+    <svg className="ml-2" width={1000} height={400}>
       <motion.path
         d={
           line<{ date: Date; value: number }>()

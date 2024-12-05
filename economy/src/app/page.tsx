@@ -52,6 +52,7 @@ export function Page() {
               <InflationTitle />
               <InflationGraph scrollYProgress={scrollYProgress} />
             </div>
+            {inflationData ? inflationData.status : 0}
           </div>
           <div className="relative h-[3000px]">
             <div className="sticky top-0">

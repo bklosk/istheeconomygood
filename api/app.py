@@ -49,6 +49,15 @@ async def fetch_data():
             "frequency": "m",
         },
     )
+    fred_cpi = requests.get(
+        "https://api.stlouisfed.org/fred/series/observations",
+        params={
+            "series_id": "CPIAUCSL",
+            "api_key": os.getenv("FRED_KEY"),
+            "file_type": "json",
+            "frequency": "m",
+        },
+    )
 
     # describe the data with GPT-4o mini
     ai_test = ai_client.chat.completions.create(
@@ -64,6 +73,7 @@ async def fetch_data():
     api_responses["time"] = datetime.datetime.now()
     api_responses["fred_rent"] = fred_rent.json()
     api_responses["fred_unrate"] = fred_unrate.json()
+    api_responses["fred_cpi"] = fred_cpi.json()
     api_responses["ai_test"] = {"message": ai_test.choices[0].message.content}
 
 

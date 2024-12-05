@@ -32,4 +32,5 @@ jobs:
             pkill -9 python
             pkill -9 uvicorn
             cd /opt/api/
+            echo "FRED_KEY=${{secrets.FRED_KEY}}" > .env
             nohup python3 app.py &> /dev/null &

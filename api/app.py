@@ -109,6 +109,12 @@ async def unrate():
     return api_responses["fred_unrate"]
 
 
+# consumer price index
+@app.get("/cpi")
+async def cpi():
+    return api_responses["fred_cpi"]
+
+
 @app.get("/ai_test")
 async def ai_test():
     return api_responses["ai_test"]

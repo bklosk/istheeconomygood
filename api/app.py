@@ -11,7 +11,7 @@ from openai import OpenAI
 
 load_dotenv()
 
-ai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# ai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app = FastAPI()
 
@@ -59,22 +59,21 @@ async def fetch_data():
         },
     )
 
-    # describe the data with GPT-4o mini
-    ai_test = ai_client.chat.completions.create(
-        messages=[
-            {
-                "role": "user",
-                "content": f"You are a PhD economist. Explain the direct, applied implications of last month's {fred_unrate.json()["observations"][-1]["value"]}% increase in unemployment to a smart high schooler. Use easily understandable words. Use short sentences. Keep the tone light. Do not use exclamation marks. Explain in one paragraph how it will impact workers. If unemployment went up, assume workers will be fired rather than take pay cuts.",
-            }
-        ],
-        model="gpt-4o-mini",
-    )
+    # ai_test = ai_client.chat.completions.create(
+    #     messages=[
+    #         {
+    #             "role": "user",
+    #             "content": f"You are a PhD economist. Explain the direct, applied implications of last month's {fred_unrate.json()["observations"][-1]["value"]}% increase in unemployment to a smart high schooler. Use easily understandable words. Use short sentences. Keep the tone light. Do not use exclamation marks. Explain in one paragraph how it will impact workers. If unemployment went up, assume workers will be fired rather than take pay cuts.",
+    #         }
+    #     ],
+    #     model="gpt-4o-mini",
+    # )
 
     api_responses["time"] = datetime.datetime.now()
     api_responses["fred_rent"] = fred_rent.json()
     api_responses["fred_unrate"] = fred_unrate.json()
     api_responses["fred_cpi"] = fred_cpi.json()
-    api_responses["ai_test"] = {"message": ai_test.choices[0].message.content}
+    # api_responses["ai_test"] = {"message": ai_test.choices[0].message.content}
 
 
 # Background task to refresh data every 24 hours
@@ -113,11 +112,6 @@ async def unrate():
 @app.get("/cpi")
 async def cpi():
     return api_responses["fred_cpi"]
-
-
-@app.get("/ai_test")
-async def ai_test():
-    return api_responses["ai_test"]
 
 
 if __name__ == "__main__":

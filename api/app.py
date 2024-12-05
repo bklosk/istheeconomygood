@@ -74,6 +74,8 @@ async def fetch_data():
     api_responses["fred_rent"] = fred_rent.json()
     api_responses["fred_unrate"] = fred_unrate.json()
     api_responses["fred_cpi"] = fred_cpi.json()
+    for observation in api_responses["fred_cpi"]["observations"]:
+        observation["value"] = float(observation["value"])
     # api_responses["ai_test"] = {"message": ai_test.choices[0].message.content}
 
 

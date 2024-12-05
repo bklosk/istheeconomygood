@@ -26,16 +26,16 @@ export function Page() {
   const { scrollYProgress } = useScroll();
   const background_color = useTransform(
     scrollYProgress,
-    [0, 0.15, 0.25, 0.9, 1],
+    [0, 0.17, 0.21, 0.9, 1],
     ["#FF3864", "#FF3864", "#345995", "#345995", "#0f0111"]
   );
 
   async function fetchInflationData() {
-    const response = await fetch("http://api.istheeconomygood.com:8000/health");
+    const response = await fetch("http://api.istheeconomygood.com:8000/cpi");
     return response.json();
   }
 
-  const { data: inflationData } = useQuery({
+  const { data: inflationData, isPending: pendingInf } = useQuery({
     queryKey: ["inflation"],
     queryFn: fetchInflationData,
   });
@@ -50,9 +50,13 @@ export function Page() {
           <div className="relative h-[3000px]">
             <div className="sticky top-6">
               <InflationTitle />
-              <InflationGraph scrollYProgress={scrollYProgress} />
+              {!pendingInf ? (
+                <InflationGraph
+                  inflation_data={inflationData}
+                  scrollYProgress={scrollYProgress}
+                />
+              ) : null}
             </div>
-            {inflationData ? inflationData.status : 0}
           </div>
           <div className="relative h-[3000px]">
             <div className="sticky top-0">

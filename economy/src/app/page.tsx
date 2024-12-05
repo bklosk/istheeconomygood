@@ -7,8 +7,22 @@ import { UnemploymentTitle } from "./components/unemployment/unemployment_title"
 
 import { useScroll } from "motion/react";
 import { useTransform } from "motion/react";
+import {
+  useQuery,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 
-export default function Page() {
+const queryClient = new QueryClient();
+export default function Wrapper() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Page />
+    </QueryClientProvider>
+  );
+}
+
+export function Page() {
   const { scrollYProgress } = useScroll();
   const background_color = useTransform(
     scrollYProgress,
@@ -16,24 +30,36 @@ export default function Page() {
     ["#FF3864", "#FF3864", "#345995", "#345995", "#0f0111"]
   );
 
+  async function fetchInflationData() {
+    const response = await fetch("http://api.istheeconomygood.com:8000/health");
+    return response.json();
+  }
+
+  const { data: inflationData } = useQuery({
+    queryKey: ["inflation"],
+    queryFn: fetchInflationData,
+  });
+
   return (
-    <AnimatePresence>
-      <motion.main
-        className="absolute w-screen h-[16000px]"
-        style={{ backgroundColor: background_color }}
-      >
-        <div className="relative h-[3000px]">
-          <div className="sticky top-6">
-            <InflationTitle />
-            <InflationGraph scrollYProgress={scrollYProgress} />
+    <QueryClientProvider client={queryClient}>
+      <AnimatePresence>
+        <motion.main
+          className="absolute w-screen h-[16000px]"
+          style={{ backgroundColor: background_color }}
+        >
+          <div className="relative h-[3000px]">
+            <div className="sticky top-6">
+              <InflationTitle />
+              <InflationGraph scrollYProgress={scrollYProgress} />
+            </div>
           </div>
-        </div>
-        <div className="relative h-[3000px]">
-          <div className="sticky top-0">
-            <UnemploymentTitle />
+          <div className="relative h-[3000px]">
+            <div className="sticky top-0">
+              <UnemploymentTitle />
+            </div>
           </div>
-        </div>
-      </motion.main>
-    </AnimatePresence>
+        </motion.main>
+      </AnimatePresence>
+    </QueryClientProvider>
   );
 }

@@ -15,7 +15,7 @@ export function InflationTitle() {
         animate={{
           width: "100%",
           transition: {
-            duration: 2,
+            duration: 1.2,
             ease: "easeInOut",
           },
         }}

@@ -16,6 +16,7 @@ jobs:
         with:
           sparse-checkout: |
             economy
+            .do/app.yaml
       - name: Deploy the app
         uses: digitalocean/app_action/deploy@v2
         # env:

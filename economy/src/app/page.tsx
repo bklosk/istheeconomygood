@@ -22,7 +22,7 @@ export default function Wrapper() {
   );
 }
 
-export function Page() {
+function Page() {
   const { scrollYProgress } = useScroll();
   const background_color = useTransform(
     scrollYProgress,

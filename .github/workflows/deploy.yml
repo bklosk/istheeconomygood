@@ -1,25 +1,36 @@
-name: Deploy site to digitalocean
+name: Build and Push to DigitalOcean Container Registry
 
 on:
   push:
-    branches: [main]
-
-permissions:
-  contents: read
+    branches:
+      - main # Change this to your deployment branch
 
 jobs:
-  deploy-app:
+  build-and-push:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
         with:
           sparse-checkout: |
             economy
-            .do/app.yaml
-      - name: Deploy the app
-        uses: digitalocean/app_action/deploy@v2
-        # env:
-        #   SOME_SECRET_FROM_REPOSITORY: ${{ secrets.SOME_SECRET_FROM_REPOSITORY }}
-        with:
-          token: ${{ secrets.DO_TOKEN }}
+
+      # Step 2: Set up Docker Buildx (for multi-platform builds if needed)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Step 3: Log in to DigitalOcean's Docker registry
+      - name: Log in to DigitalOcean Container Registry
+        run: echo "${{ secrets.DO_TOKEN }}" | docker login -u "${{ secrets.DO_USER }}" --password-stdin registry.digitalocean.com
+
+      # Step 4: Build and tag Docker image
+      - name: Build Docker Image
+        run: |
+          docker build -t registry.digitalocean.com/istheeconomygood/economy:latest .
+
+      # Step 5: Push the Docker image to DigitalOcean
+      - name: Push Docker Image
+        run: |
+          docker push registry.digitalocean.com/istheeconomygood/economy:latest

@@ -36,3 +36,9 @@ jobs:
         run: |
           cd economy
           docker push registry.digitalocean.com/istheeconomygood/economy:latest
+
+      # Step 6: Clean up
+      - name: Clean up
+        run: |
+          docker system prune -a
+          docker logout registry.digitalocean.com

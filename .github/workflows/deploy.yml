@@ -28,7 +28,7 @@ jobs:
       # Step 4: Build and tag Docker image
       - name: Build Docker Image
         run: |
-          docker build -t registry.digitalocean.com/istheeconomygood/economy:latest .
+          docker build -t registry.digitalocean.com/istheeconomygood/economy:latest . -f economy/Dockerfile
 
       # Step 5: Push the Docker image to DigitalOcean
       - name: Push Docker Image

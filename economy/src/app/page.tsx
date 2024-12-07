@@ -31,7 +31,7 @@ function Page() {
   );
 
   async function fetchInflationData() {
-    const response = await fetch("http://api.istheeconomygood.com:8000/cpi");
+    const response = await fetch("https://api.istheeconomygood.com:8000/cpi");
     return response.json();
   }
 

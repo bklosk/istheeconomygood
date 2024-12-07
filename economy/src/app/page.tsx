@@ -26,7 +26,7 @@ export function Page() {
   const { scrollYProgress } = useScroll();
   const background_color = useTransform(
     scrollYProgress,
-    [0, 0.17, 0.21, 0.9, 1],
+    [0, 0.47, 0.51, 0.9, 1],
     ["#FF3864", "#FF3864", "#345995", "#345995", "#0f0111"]
   );
 
@@ -47,7 +47,7 @@ export function Page() {
           className="absolute w-screen h-[16000px]"
           style={{ backgroundColor: background_color }}
         >
-          <div className="relative h-[3000px]">
+          <div className="relative h-[6000px]">
             <div className="sticky top-6">
               <InflationTitle />
               {!pendingInf ? (
@@ -56,6 +56,9 @@ export function Page() {
                   scrollYProgress={scrollYProgress}
                 />
               ) : null}
+            </div>
+            <div className="bg-white w-[400px] h-[75px] rounded-lg shadow-lg p-6 border border-green-200 float-right mr-4">
+              <p>Prices have been increasing for a long time.</p>
             </div>
           </div>
           <div className="relative h-[3000px]">

@@ -9,22 +9,14 @@ import * as d3 from "d3";
 export default function InflationGraph({ inflation_data, scrollYProgress }) {
   const filteredData = inflation_data.observations.filter(
     (d) =>
-      new Date(d.date) >= new Date("2010-01-01") &&
+      new Date(d.date) >= new Date("2009-01-01") &&
       new Date(d.date) <= new Date()
   );
-  // transform that maps scroll to trigger animation
-  const taylor_path_length = useTransform(scrollYProgress, [0.1, 0.2], [0, 1]);
 
   // Accessors
   const getX = (d: { date: Date; value: number }) => new Date(d.date);
   const getY = (d: { date: Date; value: number }) => d.value;
-  // Model Accessor
-  const modelY = (d: { date: Date }) => {
-    const t =
-      (new Date(d.date).getFullYear() - 2010) * 12 +
-      new Date(d.date).getMonth();
-    return 210 * Math.pow(1.02, t / 12);
-  };
+
   // Scales
   const xScale = scaleTime({
     domain: extent(filteredData, getX) as [Date, Date],
@@ -35,8 +27,16 @@ export default function InflationGraph({ inflation_data, scrollYProgress }) {
     range: [400, 0],
   });
 
+  // Map the scroll position to rotation
+  const rotation = useTransform(scrollYProgress, [0.3, 0.5], [0, 90]);
+
   return (
-    <svg className="ml-2" width={2000} height={900}>
+    <motion.svg
+      className="ml-6 mt-20"
+      width={2000}
+      height={900}
+      style={{ rotate: rotation }}
+    >
       <motion.path
         d={
           line<{ date: Date; value: number }>()
@@ -48,26 +48,24 @@ export default function InflationGraph({ inflation_data, scrollYProgress }) {
         strokeWidth={2}
         fill="none"
         initial={{ pathLength: 0 }}
-        whileInView={{ pathLength: 1, transition: { delay: 1, duration: 2 } }}
+        animate={{ pathLength: 1, transition: { delay: 0.5, duration: 1 } }}
       />
       <motion.path
         d={
           line<{ date: Date; value: number }>()
             .curve(d3.curveBasis) // Adding a curve to the line
             .x((d) => xScale(getX(d)) ?? 0)
-            .y((d) => yScale(modelY(d)) ?? 0)(filteredData) || ""
+            .y(() => yScale(2))(filteredData) || ""
         }
         stroke="yellow"
         strokeWidth={2}
         fill="none"
         initial={{ pathLength: 0 }}
-        style={{
-          pathLength: taylor_path_length,
-        }}
+        animate={{ pathLength: 1, transition: { delay: 0.9, duration: 0.8 } }}
       />
       <motion.g
         initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1, transition: { delay: 1.9, duration: 2 } }}
+        whileInView={{ opacity: 1, transition: { delay: 1.2, duration: 1 } }}
       >
         <line x1="0" x2="1000" y1="425" y2="425" stroke="white" />
         {xScale.ticks().map((tick, index) => (
@@ -80,21 +78,11 @@ export default function InflationGraph({ inflation_data, scrollYProgress }) {
               fontSize="11"
               textAnchor="middle"
             >
-              {d3.timeFormat("%Y")(tick)}
+              {d3.timeFormat("%B")(tick)}
             </text>
           </g>
         ))}
       </motion.g>
-      <motion.text
-        x="910"
-        y="0"
-        fill="white"
-        fontSize="14"
-        textAnchor="start"
-        alignmentBaseline="middle"
-      >
-        Prices
-      </motion.text>
-    </svg>
+    </motion.svg>
   );
 }

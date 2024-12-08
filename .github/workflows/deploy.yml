@@ -40,5 +40,5 @@ jobs:
       # Step 6: Clean up
       - name: Clean up
         run: |
-          docker system prune -a
+          docker system prune -af
           docker logout registry.digitalocean.com

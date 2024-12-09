@@ -27,16 +27,8 @@ export default function InflationGraph({ inflation_data, scrollYProgress }) {
     range: [400, 0],
   });
 
-  // Map the scroll position to rotation
-  const rotation = useTransform(scrollYProgress, [0.3, 0.5], [0, 90]);
-
   return (
-    <motion.svg
-      className="ml-6 mt-20"
-      width={2000}
-      height={900}
-      style={{ rotate: rotation }}
-    >
+    <motion.svg className="ml-6 mt-10" width={1000} height={900}>
       <motion.path
         d={
           line<{ date: Date; value: number }>()

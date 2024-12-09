@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 export function InflationTitle({ inflation_data }) {
   const lastObservation =
     inflation_data.observations[inflation_data.observations.length - 1];
-  const inflationRate = lastObservation.value;
+  const inflationRate = Number(lastObservation.value).toFixed(1);
   return (
     <motion.div
       initial={{ y: 500 }}

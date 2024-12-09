@@ -62,9 +62,17 @@ function Page() {
             </div>
             <div className="bg-white w-[400px] h-fit rounded-lg shadow-lg p-6 border border-green-200 float-right mr-4">
               <p>
-                This month, inflation is below 2%. The fed tries to keep
-                inflation at 2%. A little bit of inflation is good, but no one
-                wants prices to rise too quickly.
+                The Federal Reserve aims for 2% inflation. Right now, we are{" "}
+                <span className="font-extrabold">
+                  {!pendingInf
+                    ? inflationData.observations[
+                        inflationData.observations.length - 1
+                      ].value > 2
+                      ? "above"
+                      : "below"
+                    : null}{" "}
+                </span>
+                that.
               </p>
             </div>
           </div>

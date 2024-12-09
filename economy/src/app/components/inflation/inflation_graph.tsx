@@ -9,9 +9,12 @@ import * as d3 from "d3";
 export default function InflationGraph({ inflation_data, scrollYProgress }) {
   const filteredData = inflation_data.observations.filter(
     (d) =>
-      new Date(d.date) >= new Date("2009-01-01") &&
+      new Date(d.date) >= new Date("2020-01-01") &&
       new Date(d.date) <= new Date()
   );
+
+  const svg_width = 1000;
+  const svg_height = 550;
 
   // Accessors
   const getX = (d: { date: Date; value: number }) => new Date(d.date);
@@ -20,15 +23,20 @@ export default function InflationGraph({ inflation_data, scrollYProgress }) {
   // Scales
   const xScale = scaleTime({
     domain: extent(filteredData, getX) as [Date, Date],
-    range: [0, 1000],
+    range: [0, svg_width],
   });
   const yScale = scaleLinear({
     domain: [0, max(filteredData, getY) || 0],
-    range: [400, 0],
+    range: [svg_height, 0],
   });
 
   return (
-    <motion.svg className="ml-6 mt-10" width={1000} height={900}>
+    <motion.svg
+      className="mt-20"
+      width={svg_width}
+      height={svg_height}
+      viewBox="-20 -20 1000 655"
+    >
       <motion.path
         d={
           line<{ date: Date; value: number }>()
@@ -57,11 +65,17 @@ export default function InflationGraph({ inflation_data, scrollYProgress }) {
       />
       <motion.g
         initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1, transition: { delay: 1.2, duration: 1 } }}
+        animate={{
+          opacity: 1,
+          transition: { delay: 0.9, duration: 1.2 },
+        }}
       >
-        <line x1="0" x2="1000" y1="425" y2="425" stroke="white" />
+        <line x1="0" x2="1000" y1={svg_height} y2={svg_height} stroke="white" />
         {xScale.ticks().map((tick, index) => (
-          <g key={index} transform={`translate(${xScale(tick)}, 425)`}>
+          <g
+            key={index}
+            transform={`translate(${xScale(tick)}, ${svg_height})`}
+          >
             <line y2="6" stroke="white" />
             <text
               y="9"
@@ -70,7 +84,30 @@ export default function InflationGraph({ inflation_data, scrollYProgress }) {
               fontSize="11"
               textAnchor="middle"
             >
-              {d3.timeFormat("%B")(tick)}
+              {d3.timeFormat("%b %y")(tick)}
+            </text>
+          </g>
+        ))}
+      </motion.g>
+      <motion.g
+        initial={{ opacity: 0 }}
+        animate={{
+          opacity: 1,
+          transition: { delay: 0.9, duration: 1.2 },
+        }}
+      >
+        <line x1="0" x2="0" y1="0" y2="400" stroke="white" />
+        {yScale.ticks().map((tick, index) => (
+          <g key={index} transform={`translate(0, ${yScale(tick)})`}>
+            <line x2="-6" stroke="white" />
+            <text
+              x="-12"
+              dy="0.32em"
+              fill="white"
+              fontSize="11"
+              textAnchor="end"
+            >
+              {tick}
             </text>
           </g>
         ))}

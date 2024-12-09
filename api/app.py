@@ -50,13 +50,14 @@ async def fetch_data():
             "frequency": "m",
         },
     )
-    fred_cpi = requests.get(
+    fred_inflation = requests.get(
         "https://api.stlouisfed.org/fred/series/observations",
         params={
             "series_id": "CPIAUCSL",
             "api_key": os.getenv("FRED_KEY"),
             "file_type": "json",
             "frequency": "m",
+            "units": "pc1",
         },
     )
 
@@ -73,9 +74,9 @@ async def fetch_data():
     api_responses["time"] = datetime.datetime.now()
     api_responses["fred_rent"] = fred_rent.json()
     api_responses["fred_unrate"] = fred_unrate.json()
-    api_responses["fred_cpi"] = fred_cpi.json()
-    for observation in api_responses["fred_cpi"]["observations"]:
-        observation["value"] = float(observation["value"])
+    api_responses["fred_inflation"] = fred_inflation.json()
+    # for observation in api_responses["fred_inflation"]["observations"]:
+    #     observation["value"] = float(observation["value"])
     # api_responses["ai_test"] = {"message": ai_test.choices[0].message.content}
 
 
@@ -112,9 +113,9 @@ async def unrate():
 
 
 # consumer price index
-@app.get("/cpi")
-async def cpi():
-    return api_responses["fred_cpi"]
+@app.get("/inflation")
+async def inflation():
+    return api_responses["fred_inflation"]
 
 
 if __name__ == "__main__":

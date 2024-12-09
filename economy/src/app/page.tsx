@@ -31,7 +31,8 @@ function Page() {
   );
 
   async function fetchInflationData() {
-    const response = await fetch("https://api.istheeconomygood.com/cpi");
+    // const response = await fetch("https://api.istheeconomygood.com/inflation");
+    const response = await fetch("http://127.0.0.1:8000/inflation");
     return response.json();
   }
 
@@ -49,16 +50,30 @@ function Page() {
         >
           <div className="relative h-[6000px]">
             <div className="sticky top-6">
-              <InflationTitle />
               {!pendingInf ? (
-                <InflationGraph
-                  inflation_data={inflationData}
-                  scrollYProgress={scrollYProgress}
-                />
+                <div>
+                  <InflationTitle inflation_data={inflationData} />
+                  <InflationGraph
+                    inflation_data={inflationData}
+                    scrollYProgress={scrollYProgress}
+                  />
+                </div>
               ) : null}
             </div>
-            <div className="bg-white w-[400px] h-[75px] rounded-lg shadow-lg p-6 border border-green-200 float-right mr-4">
-              <p>Prices have been increasing for a long time.</p>
+            <div className="bg-white w-[400px] h-fit rounded-lg shadow-lg p-6 border border-green-200 float-right mr-4">
+              <p>
+                The Federal Reserve aims for 2% inflation. Right now, we are{" "}
+                <span className="font-extrabold">
+                  {!pendingInf
+                    ? inflationData.observations[
+                        inflationData.observations.length - 1
+                      ].value > 2
+                      ? "above"
+                      : "below"
+                    : null}{" "}
+                </span>
+                that.
+              </p>
             </div>
           </div>
           <div className="relative h-[3000px]">
